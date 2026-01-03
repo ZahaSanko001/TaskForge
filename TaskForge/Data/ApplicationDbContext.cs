@@ -12,5 +12,8 @@ namespace TaskForge.Data
         }
 
         public DbSet<Project> Projects { get; set; }
-    }
+        public DbSet<TaskItems> TaskItems { get; set; }
+
+
+        }
 }
