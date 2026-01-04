@@ -1,8 +1,25 @@
-﻿@{
+﻿@model TaskForge.ViewModels.DashboardViewModel
+@{
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="row">
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h3>@Model.ProjectCount</h3>
+                <p>Projects</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h3>@Model.MyTasks</h3>
+                <p>My Tasks</p>
+            </div>
+        </div>
+    </div>
 </div>
+

@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using TaskForge.Data;
 using TaskForge.Models;
+using TaskForge.ViewModels;
 
 namespace TaskForge.Controllers
 {
@@ -65,9 +66,13 @@ namespace TaskForge.Controllers
         // GET: TaskItems/Create
         public IActionResult Create(int projectId)
         {
+            var vm = new CreateTaskViewModels
+            {
+                ProjectId = projectId
+            };
             ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "Name", projectId);
             ViewData["AssignedToUserId"] = new SelectList(_context.Users, "Id", "Email");
-            return View();
+            return View(vm);
         }
 
         // POST: TaskItems/Create
@@ -75,16 +80,41 @@ namespace TaskForge.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(TaskItems taskItems)
+        public async Task<IActionResult> Create(CreateTaskViewModels vm)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                _context.Add(taskItems);
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Index", new {projectId = taskItems.ProjectId});
+                ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "Name", vm.ProjectId);
+                ViewData["AssignedToUserId"] = new SelectList(_context.Users, "Id", "Email", vm.AssignedToUserId);
+                return View(vm);
             }
-            ViewData["AssignedToUserId"] = new SelectList(_context.Users, "Id", "Email", taskItems.AssignedToUserId);
-            return View(taskItems);
+
+            var task = new TaskItems
+            {
+                Title = vm.Title,
+                Description = vm.Description,
+                DueDate = vm.DueDate,
+                Status = (Models.TaskStatus)vm.Status,
+                ProjectId = vm.ProjectId,
+                AssignedToUserId = vm.AssignedToUserId
+            };
+
+            _context.TaskItems.Add(task);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Index", new { projectId = vm.ProjectId });
+
+
+
+
+            //if (ModelState.IsValid)
+            //{
+            //    _context.Add(taskItems);
+            //    await _context.SaveChangesAsync();
+            //    return RedirectToAction("Index", new {projectId = taskItems.ProjectId});
+            //}
+            //ViewData["AssignedToUserId"] = new SelectList(_context.Users, "Id", "Email", taskItems.AssignedToUserId);
+            //return View(taskItems);
         }
 
         // GET: TaskItems/Edit/5

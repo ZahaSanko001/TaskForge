@@ -68,6 +68,7 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseExceptionHandler("/Home/Error");
 
 app.MapStaticAssets();
 
